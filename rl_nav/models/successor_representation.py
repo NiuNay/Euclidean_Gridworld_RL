@@ -20,9 +20,10 @@ class SuccessorRepresentation(tabular_learner.TabularLearner):
         target: str,
         imputation_method: str,
         update_no_op: bool,
+        prev_state: Tuple[int, int] = None,
+        prev_action: int = None,
     ):
         """Class constructor.
-
         Args:
             action_space: list of actions available.
             state_space: list of states.
@@ -64,6 +65,8 @@ class SuccessorRepresentation(tabular_learner.TabularLearner):
             self._id_state_mapping[i]: action_values
             for i, action_values in enumerate(self._state_action_values)
         }
+        self.prev_state = prev_state
+        self.prev_action = prev_action
 
     def _action_policy(self):
         return {
@@ -128,7 +131,6 @@ class SuccessorRepresentation(tabular_learner.TabularLearner):
         using average of values in table that are near neighbours (directly reachable).
         In SR case this is implemented at the level of the successor matrix and
         reward function.
-
         Args:
             state: new state for which value is being imputed.
             excess_state_mapping: mapping from state to near neighbours.
@@ -141,12 +143,10 @@ class SuccessorRepresentation(tabular_learner.TabularLearner):
         """method to impute values for new state that has no entry in table
         by initialising randomly. In SR case this is implemented at the level
         of the successor matrix and reward function.
-
         Args:
             state: new state for which value is being imputed.
             store_imputation: whether to compute for single-use or store
                 as part of model for future use.
-
         Returns:
             imputed_value for state.
         """
@@ -190,14 +190,12 @@ class SuccessorRepresentation(tabular_learner.TabularLearner):
         active: bool,
     ) -> None:
         """Update state-action values.
-
         Make SR update via TD:
         M(s_t, s_t+1) <- M(s_t, s_t+1) + alpha * [
                             1I(s_t=s_t+1)
                             + gamma * (M(s_t+1, s')) - M(s_t, s_t+1)
                             - M(s_t, st_t+1)
                             ]
-
         Args:
             state: state before update.
             action: action taken by agent.
@@ -218,13 +216,27 @@ class SuccessorRepresentation(tabular_learner.TabularLearner):
         new_state_id = self._state_id_mapping[new_state]
 
         self._step_reward_function(state_id=new_state_id, reward=reward)
+
+        if self.prev_state is None or (abs(state[0]-self.prev_state[0])>1) or (abs(state[1]-self.prev_state[1])>1):
+            # if a new episode has started
+            self.prev_state = state
+            self.prev_action = action
+            self.eligibility_trace = np.zeros_like(self._successor_matrix)
+            return
+
+        prev_state_id = self._state_id_mapping[self.prev_state]
+
         self._step_successor_matrix(
             state_id=state_id,
             action=action,
-            new_state_id=new_state_id,
             discount=self._gamma,
+            new_state_id=new_state_id,
+            prev_state_id=prev_state_id,
             active=active,
         )
+
+        self.prev_state = state
+        self.prev_action = action
 
         next(self._learning_rate)
 
@@ -234,24 +246,23 @@ class SuccessorRepresentation(tabular_learner.TabularLearner):
 
         self._sr_change = True
 
-    def _step_successor_matrix(self, state_id, action, discount, new_state_id, active):
+    def _step_successor_matrix(self, state_id, action, discount, new_state_id, prev_state_id, active):
+
+        decay_factor = 0.5
+        self.eligibility_trace*=(discount*decay_factor)
+        self.eligibility_trace[self.prev_action][prev_state_id] += 1
+
         if active:
-            next_action_values = self._state_action_values[new_state_id]
-            max_next_action_value = np.max(next_action_values)
-            next_action = np.random.choice(
-                np.where(next_action_values == max_next_action_value)[0]
-            )
-            next_action = np.random.choice(range(len(next_action_values)))
-            target_ = self._successor_matrix[next_action][new_state_id]
+            target_ = self._successor_matrix[action][state_id]
         else:
             target_ = self._one_hot_matrix[new_state_id]
 
         td_error = (
-            self._one_hot_matrix[state_id]
+            self._one_hot_matrix[prev_state_id]
             + discount * target_
-            - self._successor_matrix[action][state_id]
+            - self._successor_matrix[self.prev_action][prev_state_id]
         )
 
-        self._successor_matrix[action][state_id] += self._learning_rate.value * td_error
+        self._successor_matrix += self.eligibility_trace * self._learning_rate.value * td_error
 
         self._sr_change = True
