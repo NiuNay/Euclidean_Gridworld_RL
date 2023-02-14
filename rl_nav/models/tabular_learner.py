@@ -264,15 +264,15 @@ class TabularLearner(base_learner.BaseLearner):
         Returns:
             action: greedy action.
         """
-        if self._behaviour == constants.GREEDY:
-            action = self._greedy_action(
-                state=state, excess_state_mapping=excess_state_mapping
-            )
-        elif self._behaviour == constants.EPSILON_GREEDY:
-            action = self._epsilon_greedy_action(
-                state=state, epsilon=epsilon, excess_state_mapping=excess_state_mapping
-            )
-        return action
+        #if self._behaviour == constants.GREEDY:
+        #    action = self._greedy_action(
+        #        state=state, excess_state_mapping=excess_state_mapping
+        #    )
+        #elif self._behaviour == constants.EPSILON_GREEDY:
+        #    action = self._epsilon_greedy_action(
+        #        state=state, epsilon=epsilon, excess_state_mapping=excess_state_mapping
+        #    )
+        return random.choice(self._action_space)
 
     @abc.abstractmethod
     def step(self, *args, **kwargs) -> None:

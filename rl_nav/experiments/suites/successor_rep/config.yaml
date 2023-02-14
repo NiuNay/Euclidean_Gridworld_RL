@@ -6,7 +6,7 @@ training:
 
     behaviour: epsilon_greedy
     target: greedy
-    test_epsilon: 0.99
+    test_epsilon: 1
 
     train_run_trigger_states: 
         - [9, 12] # 
@@ -57,7 +57,7 @@ training:
         schedule: constant
 
         constant:
-            value: 0.99
+            value: 1
         
         linear_decay:
             initial_value: 0.99

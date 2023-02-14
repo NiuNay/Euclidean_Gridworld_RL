@@ -10,49 +10,49 @@ CONFIG_CHANGES = {
             },
         }
     ],
-    "condition_2": [
-        {
-            "training": {"train_step_cost_factor": 0.0},
-            "train_environment": {
-                "map_path": "../circular_maps/empty_obstacle_map.txt",
-                "reward_positions": [],
-            },
-            "test_environments": {
-                "map_paths": [
-                    "../circular_maps/test_map.txt",
-                    "../circular_maps/obstacle_map.txt",
-                ]
-            },
-        }
-    ],
-    "condition_3": [
-        {
-            "train_environment": {
-                "map_path": "../circular_maps/all_edge_blocked_obstacle_map.txt",
-            },
-            "test_environments": {
-                "map_paths": [
-                    "../circular_maps/all_edge_blocked_obstacle_map.txt",
-                    "../circular_maps/test_map.txt",
-                    "../circular_maps/obstacle_map.txt",
-                ]
-            },
-        }
-    ],
-    "condition_4": [
-        {
-            "train_environment": {
-                "map_path": "../circular_maps/direct_edge_blocked_obstacle_map.txt",
-            },
-            "test_environments": {
-                "map_paths": [
-                    "../circular_maps/direct_edge_blocked_obstacle_map.txt",
-                    "../circular_maps/test_map.txt",
-                    "../circular_maps/obstacle_map.txt",
-                ]
-            },
-        }
-    ],
+    #"condition_2": [
+    #    {
+    #        "training": {"train_step_cost_factor": 0.0},
+    #        "train_environment": {
+    #            "map_path": "../circular_maps/empty_obstacle_map.txt",
+    #            "reward_positions": [],
+    #        },
+    #        "test_environments": {
+    #            "map_paths": [
+    #                "../circular_maps/test_map.txt",
+    #                "../circular_maps/obstacle_map.txt",
+    #            ]
+    #        },
+    #    }
+    #],
+    #"condition_3": [
+    #    {
+    #        "train_environment": {
+    #            "map_path": "../circular_maps/all_edge_blocked_obstacle_map.txt",
+    #        },
+    #        "test_environments": {
+    #            "map_paths": [
+    #                "../circular_maps/all_edge_blocked_obstacle_map.txt",
+    #                "../circular_maps/test_map.txt",
+    #                "../circular_maps/obstacle_map.txt",
+    #            ]
+    #        },
+    #    }
+    #],
+    #"condition_4": [
+    #    {
+    #        "train_environment": {
+    #            "map_path": "../circular_maps/direct_edge_blocked_obstacle_map.txt",
+    #        },
+    #        "test_environments": {
+    #            "map_paths": [
+    #                "../circular_maps/direct_edge_blocked_obstacle_map.txt",
+    #                "../circular_maps/test_map.txt",
+    #                "../circular_maps/obstacle_map.txt",
+    #            ]
+    #        },
+    #    }
+    #],
     # "condition_5": [
     #     {
     #         "train_environment": {
