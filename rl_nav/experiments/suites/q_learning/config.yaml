@@ -1,7 +1,16 @@
 seed: 0
 
 training:
-    num_steps: 250000
+    training_data:
+        type: generated # generated, from_file
+        
+        generated:
+            num_steps: 250000
+
+        from_file:
+            file_path: ../training_data/random_walk_data_generated.npy
+    
+    # num_steps: 250000
     model: q_learning
 
     behaviour: epsilon_greedy

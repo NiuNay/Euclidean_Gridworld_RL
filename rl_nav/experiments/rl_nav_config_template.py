@@ -294,13 +294,65 @@ class RLNavConfigTemplate:
             ],
         )
 
-        self._training_template = config_template.Template(
+        _from_file_data_template = config_template.Template(
+            fields=[
+                config_field.Field(
+                    name=constants.FILE_PATH,
+                    types=[str],
+                ),
+            ],
+            level=[
+                constants.TRAINING,
+                constants.TRAINING_DATA,
+                constants.FROM_FILE,
+            ],
+            dependent_variables=[constants.TYPE],
+            dependent_variables_required_values=[
+                [constants.FROM_FILE],
+            ],
+        )
+
+        _generated_data_template = config_template.Template(
             fields=[
                 config_field.Field(
                     name=constants.NUM_STEPS,
                     types=[int],
-                    requirements=[lambda x: x > 0],
                 ),
+            ],
+            level=[
+                constants.TRAINING,
+                constants.TRAINING_DATA,
+                constants.GENERATED,
+            ],
+            dependent_variables=[constants.TYPE],
+            dependent_variables_required_values=[
+                [constants.GENERATED],
+            ],
+        )
+
+        self._training_data_template = config_template.Template(
+            fields=[
+                config_field.Field(
+                    name=constants.TYPE,
+                    types=[str],
+                    requirements=[
+                        lambda x: x
+                        in [
+                            constants.GENERATED,
+                            constants.FROM_FILE,
+                        ]
+                    ],
+                ),
+            ],
+            level=[constants.TRAINING, constants.TRAINING_DATA],
+            nested_templates=[
+                _generated_data_template,
+                _from_file_data_template,
+            ],
+        )
+
+        self._training_template = config_template.Template(
+            fields=[
                 config_field.Field(
                     name=constants.MODEL,
                     types=[str],
@@ -392,6 +444,7 @@ class RLNavConfigTemplate:
                 self._linear_features_template,
                 self._epsilon_template,
                 self._learning_rate_template,
+                self._training_data_template
             ],
         )
 
