@@ -26,7 +26,7 @@ from rl_nav.models import (
     state_linear_features,
     successor_representation,
 )
-from rl_nav.utils import training_data_types, epsilon_schedules, learning_rate_schedules, model_utils
+from rl_nav.utils import epsilon_schedules, learning_rate_schedules, model_utils
 
 
 class BaseRunner(base_runner.BaseRunner):
@@ -59,14 +59,14 @@ class BaseRunner(base_runner.BaseRunner):
 
         self._epsilon = self._setup_epsilon(config=config)
         self._test_epsilon = config.test_epsilon
-        # self._training_data = self._setup_training_data(config=config)
-        if isinstance(self._setup_training_data(config=config), int):
-            self._num_steps = self._setup_training_data(config=config)
-            print(self._num_steps)
-            print("1")
+        if config.type == constants.GENERATED:
+            self._num_steps = config.num_steps
+        elif config.type == constants.FROM_FILE:
+             self._file_path = config.file_path
         else:
-            self._file_path = self._setup_training_data(config=config)
-            print("2")
+            raise ValueError(
+                    f"Training data type {config.type} not recognised."
+                )
         self._step_count = 0
         self._print_frequency = config.print_frequency
         self._rollout_frequency = config.rollout_frequency
@@ -340,15 +340,6 @@ class BaseRunner(base_runner.BaseRunner):
 
         return env_args
 
-    #########
-    def _setup_training_data(self,config):
-        print("HI")
-        if config.type == constants.GENERATED:
-            return training_data_types.GeneratedTrainingData(num_steps=config.num_steps)
-        elif config.type == constants.FROM_FILE:
-            return training_data_types.FromFileTrainingData(file_path=config.file_path)
-    #########
-    
     def _setup_epsilon(self, config):
         if config.schedule == constants.CONSTANT:
             return epsilon_schedules.ConstantEpsilon(value=config.value)
