@@ -61,8 +61,10 @@ class BaseRunner(base_runner.BaseRunner):
         self._test_epsilon = config.test_epsilon
         if config.type == constants.GENERATED:
             self._num_steps = config.num_steps
+            self._file_path = None
         elif config.type == constants.FROM_FILE:
              self._file_path = config.file_path
+             self._num_steps = None
         else:
             raise ValueError(
                     f"Training data type {config.type} not recognised."
@@ -199,6 +201,28 @@ class BaseRunner(base_runner.BaseRunner):
         next(self._epsilon)
 
         return state, reward, logging_dict
+
+    def _train_step_from_file(self, states):
+
+        if self._step_count % self._print_frequency == 0:
+            self._logger.info(f"Step: {self._step_count}")
+        self._step_count += 1
+
+        logging_dict = {}
+        if (
+            self._step_count % self._visualisation_frequency == 0
+            and self._step_count != 1
+        ):
+            self._generate_visualisations()
+        if self._step_count % self._train_test_frequency == 0:
+            logging_dict = self._perform_tests(
+                rollout=(self._step_count % self._rollout_frequency == 0),
+                planning=self._planner,
+            )
+        
+        reward = self._model_train_step_from_file(states)
+
+        return reward, logging_dict
 
     @abc.abstractmethod
     def _model_train_step(self, state):
