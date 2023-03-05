@@ -64,11 +64,9 @@ class EpisodicQLearningRunner(episodic_runner.EpisodicRunner):
         """perform single training step."""
         state = tuple(np.int_(states[0]))
         new_state = tuple(np.int_(states[1]))
-        #print("NEW STATE REAL", new_state)
         diff = tuple(map(lambda i, j: i - j, new_state, state))
         action = self._deltas_[diff]
         reward, new_state = self._train_environment.step(action)
-        #print("NEW STATE CALCULATED", new_state)
         self._model.step(
             state=state,
             action=action,

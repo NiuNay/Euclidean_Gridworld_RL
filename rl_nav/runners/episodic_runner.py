@@ -36,8 +36,15 @@ class EpisodicRunner(base_runner.BaseRunner):
         if self._num_steps is None:
             training_data = np.load(self._file_path)
             num_trials = training_data.shape[2]
+            num_steps = training_data.shape[0]
             for i in range(num_trials):
-                self._train_episode_from_file(training_data[:,:,i])
+                print("NUM TRIALS: ", num_trials)
+                print("TRIAL #: ", i)
+                print("COUNT FOR TRIAL: ", self._count_for_trial)
+                print("NUM STEPS: ", num_steps)
+                self._count_for_trial = 0
+                while self._count_for_trial < num_steps:
+                    self._train_episode_from_file(training_data[:,:,i])
         else:
             while self._step_count < self._num_steps:
                 self._train_episode()
@@ -53,7 +60,6 @@ class EpisodicRunner(base_runner.BaseRunner):
             logging_dict: dictionary of items to log (e.g. episode reward).
         """
         self._episode_count += 1
-
         episode_reward = 0
 
         state = self._train_environment.reset_environment()
@@ -89,17 +95,19 @@ class EpisodicRunner(base_runner.BaseRunner):
             logging_dict: dictionary of items to log (e.g. episode reward).
         """
         self._episode_count += 1
-
         episode_reward = 0
+
+        #print("COUNT: ", self._count)
+        #print("TOTAL_COUNT:", self._step_count)
+        self._count = 0
 
         state = tuple(np.int_(data[0,:]))
         self._train_environment.reset_environment(start_position=state)
         self._num_steps = data.shape[0]
 
-        while self._train_environment.active and self._step_count < self._num_steps:
+        while self._train_environment.active and self._count < self._num_steps:
 
-            states = data[self._step_count:self._step_count+2,:]
-            print("STATES:", states)
+            states = data[self._count:self._count+2,:]
             reward, logging_dict = self._train_step_from_file(states=states)
             episode_reward += reward
 
