@@ -51,7 +51,7 @@ if __name__ == "__main__":
     if config.model == constants.Q_LEARNING:
         runner_module_name = "q_learning_runner"
         runner_module_path = os.path.join(runners_module_path, "q_learning_runner.py")
-        if config.train_episode_timeout is None:
+        if config.train_episode_timeout is None and config.type == constants.GENERATED:
             runner_class = q_learning_runner.LifelongQLearningRunner
             runner_class_name = "LifelongQLearningRunner"
         else:
@@ -63,7 +63,7 @@ if __name__ == "__main__":
         runner_module_path = os.path.join(
             runners_module_path, "successor_rep_runner.py"
         )
-        if config.train_episode_timeout is None:
+        if config.train_episode_timeout is None and config.type == constants.GENERATED:
             runner_class = successor_rep_runner.LifelongSRRunner
             runner_class_name = "LifelongSRRunner"
         else:
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     elif config.model in [constants.DYNA, constants.UNDIRECTED_DYNA]:
         runner_module_name = "dyna_runner"
         runner_module_path = os.path.join(runners_module_path, "dyna_runner.py")
-        if config.train_episode_timeout is None:
+        if config.train_episode_timeout is None and config.type == constants.GENERATED:
             runner_class = dyna_runner.LifelongDynaRunner
             runner_class_name = "LifelongDynaRunner"
         else:
@@ -88,7 +88,7 @@ if __name__ == "__main__":
         runner_module_path = os.path.join(
             runners_module_path, "dyna_linear_feature_runner.py"
         )
-        if config.train_episode_timeout is None:
+        if config.train_episode_timeout is None and config.type == constants.GENERATED:
             runner_class = dyna_linear_feature_runner.LifelongDynaLinearFeatureRunner
             runner_class_name = "LifelongDynaLinearFeatureRunner"
         else:
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     elif config.model == constants.A_STAR:
         runner_module_name = "a_star_runner"
         runner_module_path = os.path.join(runners_module_path, "a_star_runner.py")
-        if config.train_episode_timeout is None:
+        if config.train_episode_timeout is None and config.type == constants.GENERATED:
             runner_class = a_star_runner.LifelongAStarRunner
             runner_class_name = "LifelongAStarRunner"
         else:
@@ -110,7 +110,7 @@ if __name__ == "__main__":
         runner_module_path = os.path.join(
             runners_module_path, "linear_feature_runner.py"
         )
-        if config.train_episode_timeout is None:
+        if config.train_episode_timeout is None and config.type == constants.GENERATED:
             runner_class = linear_feature_runner.LifelongLinearFeatureRunner
             runner_class_name = "LifelongLinearFeatureRunner"
         else:
@@ -122,7 +122,7 @@ if __name__ == "__main__":
         runner_module_path = os.path.join(
             runners_module_path, "linear_feature_runner.py"
         )
-        if config.train_episode_timeout is None:
+        if config.train_episode_timeout is None and config.type == constants.GENERATED:
             runner_class = linear_feature_runner.LifelongLinearFeatureRunner
             runner_class_name = "LifelongLinearFeatureRunner"
         else:

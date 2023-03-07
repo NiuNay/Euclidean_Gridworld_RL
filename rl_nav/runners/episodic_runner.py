@@ -93,7 +93,7 @@ class EpisodicRunner(base_runner.BaseRunner):
         episode_reward = 0
 
         state = tuple(np.int_(data[self._trial_step_count,:]))
-        self._train_environment.reset_environment(start_position=state)
+        self._train_environment.reset_environment(start_position=state, episode_timeout=self._num_steps)
 
         while self._train_environment.active and self._trial_step_count+1 < self._num_steps:
 
