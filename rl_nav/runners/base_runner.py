@@ -69,8 +69,7 @@ class BaseRunner(base_runner.BaseRunner):
             raise ValueError(
                     f"Training data type {config.type} not recognised."
                 )
-        self._count_for_trial = 0
-        self._count = 0
+        self._trial_step_count = 0
         self._step_count = 0
         self._print_frequency = config.print_frequency
         self._rollout_frequency = config.rollout_frequency
@@ -208,8 +207,7 @@ class BaseRunner(base_runner.BaseRunner):
 
         if self._step_count % self._print_frequency == 0:
             self._logger.info(f"Step: {self._step_count}")
-        self._count_for_trial += 1
-        self._count += 1
+        self._trial_step_count += 1
         self._step_count += 1
         
 
@@ -698,7 +696,6 @@ class BaseRunner(base_runner.BaseRunner):
         the threat zone at which point a test rollout is triggered."""
         test_logging_dict = {}
 
-        print("Find threat test")
         for i, (map_name, test_env) in enumerate(self._test_environments.items()):
 
             model_copy = copy.deepcopy(self._model)

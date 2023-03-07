@@ -33,22 +33,17 @@ class EpisodicRunner(base_runner.BaseRunner):
     def train(self):
         self._model.train()
         self._model.env_transition_matrix = self._train_environment.transition_matrix
-        if self._num_steps is None:
-            training_data = np.load(self._file_path)
-            num_trials = training_data.shape[2]
-            num_steps = training_data.shape[0]
-            for i in range(num_trials):
-                print("NUM TRIALS: ", num_trials)
-                print("TRIAL #: ", i)
-                print("COUNT FOR TRIAL: ", self._count_for_trial)
-                print("NUM STEPS: ", num_steps)
-                self._count_for_trial = 0
-                while self._count_for_trial < num_steps:
-                    self._train_episode_from_file(training_data[:,:,i])
-        else:
+        if self._file_path is None:
             while self._step_count < self._num_steps:
                 self._train_episode()
-
+        else:
+            training_data = np.load(self._file_path)
+            num_trials = training_data.shape[2]
+            self._num_steps = training_data.shape[0]
+            for i in range(num_trials):
+                self._trial_step_count = 0
+                while self._trial_step_count+1 < self._num_steps:
+                    self._train_episode_from_file(training_data[:,:,i])
 
     def _train_episode(self) -> Dict[str, Any]:
         """Perform single training loop.
@@ -97,17 +92,12 @@ class EpisodicRunner(base_runner.BaseRunner):
         self._episode_count += 1
         episode_reward = 0
 
-        #print("COUNT: ", self._count)
-        #print("TOTAL_COUNT:", self._step_count)
-        self._count = 0
-
-        state = tuple(np.int_(data[0,:]))
+        state = tuple(np.int_(data[self._trial_step_count,:]))
         self._train_environment.reset_environment(start_position=state)
-        self._num_steps = data.shape[0]
 
-        while self._train_environment.active and self._count < self._num_steps:
+        while self._train_environment.active and self._trial_step_count+1 < self._num_steps:
 
-            states = data[self._count:self._count+2,:]
+            states = data[self._trial_step_count:self._trial_step_count+2,:]
             reward, logging_dict = self._train_step_from_file(states=states)
             episode_reward += reward
 
