@@ -41,6 +41,7 @@ class EpisodicRunner(base_runner.BaseRunner):
             num_trials = training_data.shape[2]
             self._num_steps = training_data.shape[0]
             for i in range(num_trials):
+                self._trial_num = i+1;
                 self._trial_step_count = 0
                 while self._trial_step_count+1 < self._num_steps:
                     self._train_episode_from_file(training_data[:,:,i])

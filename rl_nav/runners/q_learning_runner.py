@@ -63,10 +63,14 @@ class EpisodicQLearningRunner(episodic_runner.EpisodicRunner):
     def _model_train_step_from_file(self, states) -> float:
         """perform single training step."""
         state = tuple(np.int_(states[0]))
-        new_state = tuple(np.int_(states[1]))
-        diff = tuple(map(lambda i, j: i - j, new_state, state))
+        new_state_actual = tuple(np.int_(states[1]))
+        diff = tuple(map(lambda i, j: i - j, new_state_actual, state))
         action = self._deltas_[diff]
         reward, new_state = self._train_environment.step(action)
+        if new_state_actual != new_state:
+            raise ValueError(
+                f"The next state (state number {self._trial_step_count+1} of trial {self._trial_num}) specified by your training data does not match a permissible state in the training map you have specified."
+                )
         self._model.step(
             state=state,
             action=action,
