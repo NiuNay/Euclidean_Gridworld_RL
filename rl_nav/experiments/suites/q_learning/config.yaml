@@ -8,7 +8,7 @@ training:
             num_steps: 250000
 
         from_file:
-            file_path: ../training_data/random_walk_data_generated_4.npy # data needs to be in the format [num_steps, coordinates, num_trials]
+            file_path: ../training_data/random_walk_data_generated_4.npy # data needs to be in the format [num_steps, coordinates (x,y) or (x,y,x_attempted,y_attempted), num_trials]
     
     model: q_learning
 

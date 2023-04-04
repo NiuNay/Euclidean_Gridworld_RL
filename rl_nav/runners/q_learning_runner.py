@@ -62,9 +62,14 @@ class EpisodicQLearningRunner(episodic_runner.EpisodicRunner):
 
     def _model_train_step_from_file(self, states) -> float:
         """perform single training step."""
-        state = tuple(np.int_(states[0]))
-        new_state_actual = tuple(np.int_(states[1]))
-        diff = tuple(map(lambda i, j: i - j, new_state_actual, state))
+        if states.shape[1]==4:
+            state = tuple(np.int_(states[0,0:2]))
+            new_state_actual = tuple(np.int_(states[1,0:2]))
+            attempted_state = tuple(np.int_(states[1,2:4]))
+        elif states.shape[1]==2:
+            state = tuple(np.int_(states[0]))
+            new_state_actual = tuple(np.int_(states[1]))
+        diff = tuple(map(lambda i, j: i - j, attempted_state, state))
         action = self._deltas_[diff]
         reward, new_state = self._train_environment.step(action)
         if new_state_actual != new_state:

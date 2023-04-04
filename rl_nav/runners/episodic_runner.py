@@ -40,6 +40,7 @@ class EpisodicRunner(base_runner.BaseRunner):
             training_data = np.load(self._file_path)
             num_trials = training_data.shape[2]
             self._num_steps = training_data.shape[0]
+            self._episode_timeout=self._num_steps
             for i in range(num_trials):
                 self._trial_num = i+1;
                 self._trial_step_count = 0
@@ -74,7 +75,6 @@ class EpisodicRunner(base_runner.BaseRunner):
                 ] = self._train_environment.episode_step_count
 
             self._log_episode(step=self._step_count, logging_dict=logging_dict)
-
             if (
                 self._step_count % self._checkpoint_frequency == 0
                 and self._step_count != 1
@@ -93,8 +93,8 @@ class EpisodicRunner(base_runner.BaseRunner):
         self._episode_count += 1
         episode_reward = 0
 
-        state = tuple(np.int_(data[self._trial_step_count,:]))
-        self._train_environment.reset_environment(start_position=state, episode_timeout=self._num_steps)
+        state = tuple(np.int_(data[self._trial_step_count,0:2]))
+        self._train_environment.reset_environment(start_position=state)
 
         while self._train_environment.active and self._trial_step_count+1 < self._num_steps:
 
@@ -104,7 +104,7 @@ class EpisodicRunner(base_runner.BaseRunner):
 
             logging_dict[constants.STEP] = self._step_count
 
-            if not self._train_environment.active:
+            if not self._train_environment.active or self._step_count == 1:
                 logging_dict[constants.TRAIN_EPISODE_REWARD] = episode_reward
                 logging_dict[
                     constants.TRAIN_EPISODE_LENGTH
