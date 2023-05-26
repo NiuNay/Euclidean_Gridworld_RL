@@ -39,13 +39,15 @@ class EpisodicRunner(base_runner.BaseRunner):
         else:
             training_data = np.load(self._file_path)
             num_trials = training_data.shape[2]
-            self._num_steps = training_data.shape[0]
-            self._episode_timeout=self._num_steps
             for i in range(num_trials):
+                a = training_data[:,:,i]
+                a = a[np.insert(np.invert(np.all(np.diff(a,axis=0)==0,axis=1)), 0, True)]
+                self._num_steps = len(a)
+                self._episode_timeout=self._num_steps
                 self._trial_num = i+1;
                 self._trial_step_count = 0
                 while self._trial_step_count+1 < self._num_steps:
-                    self._train_episode_from_file(training_data[:,:,i])
+                    self._train_episode_from_file(a)
 
     def _train_episode(self) -> Dict[str, Any]:
         """Perform single training loop.
