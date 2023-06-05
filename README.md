@@ -23,7 +23,8 @@ SUBMITTING JOBS:
 - Navigate to the experiments folder using: ```cd rl_nav/experiments```
 - Modify the config files as needed:
   - The base config file for each model can be found in experiments/suites/\[MODEL_NAME]/config.yaml\
-  ---> If you want to train a model using data from a file, add your own to the rl_nav/training_data folder or unzip training_data_zipped.zip to find a ready-to-use selection
+    - If you want to train a model using data from a file, add your own to the rl_nav/training_data folder or unzip training_data_zipped.zip to find a ready-to-use selection
+    - The "code" folder in the same directory contains Jupyter Notebooks that can be used to produce more random walk data files or process the real mouse data (condition_1.pkl) 
   - An additional file found under experiments/suites/config_changes.yaml can be used to run the simulation multiple times, changing condition (different gridworld training map) each time
     - There are 4 main conditions, outlined in Shamash et al.'s 2023 paper: https://doi.org/10.1016/j.neuron.2023.03.034
     - Simply uncomment the conditions in which you would like the simulations to run on
