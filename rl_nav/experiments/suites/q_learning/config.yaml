@@ -5,10 +5,10 @@ training:
         type: from_file # generated, from_file
         
         generated:
-            num_steps: 250000
+            num_steps: 250000 #11344
 
         from_file:
-            file_path: ../training_data/mouse_data_1_extendedx5.npy # data needs to be in the format [num_steps, coordinates (x,y) or (x,y,x_attempted,y_attempted), num_trials]
+            file_path: ../training_data/random_walk_data_1_2_extendedx5.npy # data needs to be in the format [num_steps, coordinates (x,y) or (x,y,x_attempted,y_attempted), num_trials]
     
     model: q_learning
 
@@ -154,11 +154,11 @@ test_environments:
 
 logging:
     print_frequency: 5000
-    visualisation_frequency: 50000
-    rollout_frequency: 50000
-    train_test_frequency: 5000
-    test_frequency: 50000
-    checkpoint_frequency: 50000
+    visualisation_frequency: 50000 #11344
+    rollout_frequency: 50000 #11344
+    train_test_frequency: 5000 #5672
+    test_frequency: 50000 #11344
+    checkpoint_frequency: 50000 #11344
 
     visualisations: 
         # - numbered_value_function
