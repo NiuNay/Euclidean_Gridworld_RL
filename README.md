@@ -6,10 +6,10 @@ This is a repo for training reinforcement-learning agents is a gridworld, such t
 - State-action Successor Representation
 - Model-based tree search
 
-There are files in this repository corresponding to different models but these are not currently functional.
+NOTE: there are files in this repository corresponding to different models but these are not currently functional.
 
 ## Usage
-SETUP:
+### Setup
 - Create a virtual environment and activate it:\
 ```conda create --name [YOUR_ENV_NAME] python=3.8```\
 ```conda activate [YOUR_ENV_NAME]```
@@ -19,7 +19,7 @@ SETUP:
 ```pip install -r requirements.txt```\
 ```pip install -e .```
 
-SUBMITTING JOBS:
+### Submitting jobs
 - Navigate to the experiments folder using: ```cd rl_nav/experiments```
 - Modify the config files as needed:
   - The base config file for each model can be found in experiments/suites/\[MODEL_NAME]/config.yaml
@@ -28,7 +28,11 @@ SUBMITTING JOBS:
   - An additional file found under experiments/suites/config_changes.yaml can be used to run the simulation multiple times, changing condition (different gridworld training map) each time
     - There are 4 main conditions, outlined in Shamash et al.'s 2023 paper: https://doi.org/10.1016/j.neuron.2023.03.034
     - Simply uncomment the conditions in which you would like the simulations to run on
-- Run an experiment, e.g. with the command ```python run.py --mode parallel --seeds 2 --config_path suites/[MODEL_NAME]/config.yaml --config_changes config_changes.py```
+- Run an experiment, e.g. with the command ```python run.py --mode parallel --seeds 1 --config_path suites/[MODEL_NAME]/config.yaml --config_changes config_changes.py```
 
 
-VISUALIZING RESULTS: use the command ```python post_process.py --results_folder results/[RESULTS_FOLDER_NAME] --plot_trajectories```
+### Visualising results
+- The results obtained from running the code will appear in a folder under experiments/results
+- To visualise them, use the command:\
+```python post_process.py --results_folder results/[RESULTS_FOLDER_NAME] --plot_trajectories```
+- Plots will appear in the same folder
